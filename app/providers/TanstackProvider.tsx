@@ -9,7 +9,7 @@ const TanstackProvider = ({ children }: { children: React.ReactNode }) => {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000,
+            refetchOnWindowFocus: true,
           },
         },
       })

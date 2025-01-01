@@ -1,8 +1,8 @@
-import TextShareClient from './components/TextShare';
+import TextShareContent from './components/TextShareContent';
 
 const Home = () => {
   return (
-    <TextShareClient initialSharedTexts={[]} />
+    <TextShareContent initialSharedTexts={[]} />
   );
 };
 
