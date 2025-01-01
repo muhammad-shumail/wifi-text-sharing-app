@@ -1,10 +1,8 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { SharedTextItems } from '../types';
 import LoadingFallback from './Loading-fallback';
 
 interface TextShareClientProps {

@@ -6,6 +6,7 @@ import LoadingFallback from './Loading-fallback'
 import { ToastContainer, toast } from 'react-toastify';
 import Link from 'next/link';
 import { SharedTextItems } from '../types';
+import Loader from './Loader';
 
 interface TextShareClientProps {
     initialSharedTexts?: string[]
@@ -80,11 +81,7 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
             </div>
             <div className="w-full h-12 flex items-center justify-center">
                 {isPending ? (
-                    <div className="loading flex justify-center">
-                        <span className="w-4 h-4 bg-gray-200 rounded-full mx-1 animate-pulse"></span>
-                        <span className="w-4 h-4 bg-gray-200 rounded-full mx-1 animate-pulse"></span>
-                        <span className="w-4 h-4 bg-gray-200 rounded-full mx-1 animate-pulse"></span>
-                    </div>
+                    <Loader />
                 ) : (
                     <button onClick={handleShare} className="bg-blue-500 text-white w-full h-full rounded-md">
                         Share
