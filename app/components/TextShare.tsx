@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import LoadingFallback from './Loading-fallback'
+import { ToastContainer, toast } from 'react-toastify';
 
 interface TextShareClientProps {
     initialSharedTexts?: string[]
@@ -12,7 +13,7 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
     const [text, setText] = useState('')
     const queryClient = useQueryClient()
 
-    const { data: sharedTexts, isLoading: isLoadingTexts } = useQuery({
+    const { data, isLoading: isLoadingTexts } = useQuery({
         queryKey: ['sharedTexts'],
         queryFn: async () => {
             const res = await fetch('/api/share')
@@ -43,6 +44,12 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
             shareText(text)
         }
     }
+
+    const handleCopyUrl = (url: string) => {
+        navigator.clipboard.writeText(url);
+        toast.success('URL copied to clipboard');
+    };
+
 
     if (isLoadingTexts) {
         return <LoadingFallback />
@@ -86,12 +93,19 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
                 <h2 className="text-xl font-semibold mb-4">Shared Texts</h2>
                 <div className="nm-flat-gray-200-lg rounded-lg overflow-y-auto h-80 smooth-scroll">
                     <ul className="space-y-2 p-4">
-                        {sharedTexts.sharedTexts?.slice().reverse().map((sharedText, index) => (
-                            <li key={index} className="bg-gray-100 p-2 rounded-md">
-                                {sharedText}
+                        {data.sharedTexts.slice().reverse().map((sharedText) => (
+                            <li key={sharedText.id} className="bg-gray-100 p-2 rounded-md flex justify-between">
+                                <span>{sharedText.text}</span>
+                                <button
+                                    className="text-blue-500 hover:text-blue-700"
+                                    onClick={() => handleCopyUrl(sharedText.url)}
+                                >
+                                    Copy URL
+                                </button>
                             </li>
                         ))}
                     </ul>
+                    <ToastContainer />
                 </div>
             </div>
         </div>
