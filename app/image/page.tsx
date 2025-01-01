@@ -1,6 +1,7 @@
 // app/page.js
 'use client';
 
+import Image from 'next/image';
 import React, { useState } from 'react';
 
 const HomePage = () => {
@@ -47,7 +48,7 @@ const HomePage = () => {
       {uploadedImage && (
         <div className="mt-4">
           <h2 className="text-lg font-bold">Uploaded Image:</h2>
-          <img src={uploadedImage} alt="Uploaded" className="mt-2" />
+          <Image src={uploadedImage} alt="Uploaded" className="mt-2" width={500} height={200}/>
         </div>
       )}
     </div>
