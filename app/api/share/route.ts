@@ -5,8 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 const sharedTexts: { id: string; text: string }[] = [];
 
 // Define a function to handle GET requests
-// Define a function to handle GET requests
-// Define a function to handle GET requests
 export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
@@ -14,7 +12,7 @@ export async function GET(request: NextRequest) {
     if (id) {
         const sharedText = sharedTexts.find((text) => text.id === id);
         if (sharedText) {
-            const completeUrl = `http://localhost:3000/api/share?id=${id}`;
+            const completeUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/share?id=${id}`;
             return NextResponse.json({ id: id, text: sharedText.text, url: completeUrl });
         } else {
             return NextResponse.json({ error: 'Text not found' }, { status: 404 });
@@ -24,13 +22,12 @@ export async function GET(request: NextRequest) {
         const sharedTextsWithUrl = sharedTexts.map((text) => ({
             id: text.id,
             text: text.text,
-            url: `http://localhost:3000/api/share?id=${text.id}`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/api/share?id=${text.id}`,
         }));
         return NextResponse.json({ sharedTexts: sharedTextsWithUrl });
     }
 }
 
-// Define a function to handle POST requests
 // Define a function to handle POST requests
 export async function POST(request: NextRequest) {
     // Get the request body as JSON
@@ -43,7 +40,7 @@ export async function POST(request: NextRequest) {
     sharedTexts.push({ id, text: body.text });
 
     // Generate the complete URL
-    const url = `http://localhost:3000/api/share?id=${id}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/share?id=${id}`;
 
     // Return the updated shared texts as JSON
     return NextResponse.json({ url, text: body.text, message: 'Text shared successfully' });

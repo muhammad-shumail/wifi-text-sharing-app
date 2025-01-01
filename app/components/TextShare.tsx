@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import LoadingFallback from './Loading-fallback'
 import { ToastContainer, toast } from 'react-toastify';
+import Link from 'next/link';
 
 interface TextShareClientProps {
     initialSharedTexts?: string[]
@@ -92,15 +93,17 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
             <div className="mt-6">
                 <h2 className="text-xl font-semibold mb-4">Shared Texts</h2>
                 <div className="nm-flat-gray-200-lg rounded-lg overflow-y-auto h-80 smooth-scroll">
-                    <ul className="space-y-2 p-4">
+                    <ul className="space-y-2 p-4 flex flex-col">
                         {data.sharedTexts.slice().reverse().map((sharedText) => (
-                            <li key={sharedText.id} className="bg-gray-100 p-2 rounded-md flex justify-between">
-                                <span>{sharedText.text}</span>
+                            <li key={sharedText.id} className="flex justify-between items-center w-full">
+                                <Link href={`/share/${sharedText.id}`} className="bg-gray-100 p-2 rounded-md flex-grow">
+                                    <span>{sharedText.text}</span>
+                                </Link>
                                 <button
-                                    className="text-blue-500 hover:text-blue-700"
-                                    onClick={() => handleCopyUrl(sharedText.url)}
+                                    className="text-blue-500 hover:text-blue-700 ml-4"
+                                    onClick={() => handleCopyUrl(`${process.env.NEXT_PUBLIC_API_URL}/share/${sharedText.id}`)}
                                 >
-                                    Copy URL
+                                    Share Link
                                 </button>
                             </li>
                         ))}
@@ -108,6 +111,6 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
                     <ToastContainer />
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
