@@ -1,3 +1,6 @@
+import { JSXElementConstructor, ReactElement } from "react";
+import { Key } from "readline";
+
 export interface SharedText {
     id: string;
     content: string;
@@ -24,4 +27,10 @@ export interface PostModel {
 export interface PostAddModel {
     title: string,
     content: string
+}
+
+export interface SharedTextItems {
+    id: string;
+    text: string;
+    url: string;
 }

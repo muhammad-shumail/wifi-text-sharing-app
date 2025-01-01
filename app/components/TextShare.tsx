@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import LoadingFallback from './Loading-fallback'
 import { ToastContainer, toast } from 'react-toastify';
 import Link from 'next/link';
+import { SharedTextItems } from '../types';
 
 interface TextShareClientProps {
     initialSharedTexts?: string[]
@@ -94,7 +95,7 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
                 <h2 className="text-xl font-semibold mb-4">Shared Texts</h2>
                 <div className="nm-flat-gray-200-lg rounded-lg overflow-y-auto h-80 smooth-scroll">
                     <ul className="space-y-2 p-4 flex flex-col">
-                        {data.sharedTexts.slice().reverse().map((sharedText) => (
+                        {data.sharedTexts.slice().reverse().map((sharedText: SharedTextItems) => (
                             <li key={sharedText.id} className="flex justify-between items-center w-full">
                                 <Link href={`/share/${sharedText.id}`} className="bg-gray-100 p-2 rounded-md flex-grow">
                                     <span>{sharedText.text}</span>
