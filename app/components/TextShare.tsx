@@ -1,55 +1,99 @@
-import React, { useState, useEffect } from 'react';
+'use client'
 
-const TextShare: React.FC = () => {
-    const [text, setText] = useState<string>('');
-    const [sharedText, setSharedText] = useState<string | null>(null);
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import LoadingFallback from './Loading-fallback'
 
-    const handleShare = async () => {
-        if (text) {
-            await fetch('/api/share', {
+interface TextShareClientProps {
+    initialSharedTexts?: string[]
+}
+
+export default function TextShareClient({ initialSharedTexts = [] }: TextShareClientProps) {
+    const [text, setText] = useState('')
+    const queryClient = useQueryClient()
+
+    const { data: sharedTexts, isLoading: isLoadingTexts } = useQuery({
+        queryKey: ['sharedTexts'],
+        queryFn: async () => {
+            const res = await fetch('/api/share')
+            if (!res.ok) throw new Error('Failed to fetch shared texts')
+            return res.json()
+        },
+        initialData: { sharedTexts: initialSharedTexts },
+    })
+
+    const { mutate: shareText, isPending } = useMutation({
+        mutationFn: async (newText: string) => {
+            const res = await fetch('/api/share', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text }),
-            });
-            setText('');
-            fetchSharedText();
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: newText }),
+            })
+            if (!res.ok) throw new Error('Failed to share text')
+            return res.json()
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['sharedTexts'] })
+            setText('')
+        },
+    })
+
+    const handleShare = () => {
+        if (text) {
+            shareText(text)
         }
-    };
+    }
 
-    const fetchSharedText = async () => {
-        const response = await fetch('/api/share');
-        const data = await response.json();
-        setSharedText(data.text);
-    };
-
-    useEffect(() => {
-        fetchSharedText();
-    }, []);
+    if (isLoadingTexts) {
+        return <LoadingFallback />
+    }
 
     return (
-        <div className="flex flex-col items-center justify-center p-4">
-            <textarea
-                className="border p-2 w-full h-32"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Type your text here..."
-            />
-            <button
-                className="mt-2 bg-blue-500 text-white p-2 rounded"
-                onClick={handleShare}
-            >
-                Share Text
-            </button>
-            {sharedText && (
-                <div className="mt-4 p-2 border">
-                    <h2 className="font-bold">Shared Text:</h2>
-                    <p>{sharedText}</p>
+        <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+            <h1 className="text-3xl font-bold mb-2">WiFi Share</h1>
+            <p className="text-gray-600 mb-4">
+                <span className="font-bold text-blue-600">Share text with devices on the same network!</span>
+            </p>
+            <p className="text-gray-600 mb-4">
+                This app allows you to <span className="font-bold text-blue-600">share text</span> with other devices connected to the <span className="font-bold text-blue-600">same WiFi network</span>. Simply type in the text you want to share, and it will be available to other devices on the network.
+            </p>
+            <p className="text-gray-600 mb-4">
+                <span className="font-bold text-red-600">Important:</span> This app only works on devices connected to the <span className="font-bold text-blue-600">same WiFi network</span>. Make sure your device is connected to the same network as the device you want to share with.
+            </p>
+            <div className="mb-4">
+                <input
+                    type="text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className="appearance-none rounded-full nm-inset-gray-200 leading-5 px-8 py-4 flex-grow w-full"
+                    placeholder="Enter text to share"
+                />
+            </div>
+            <div className="w-full h-12 flex items-center justify-center">
+                {isPending ? (
+                    <div className="loading flex justify-center">
+                        <span className="w-4 h-4 bg-gray-200 rounded-full mx-1 animate-pulse"></span>
+                        <span className="w-4 h-4 bg-gray-200 rounded-full mx-1 animate-pulse"></span>
+                        <span className="w-4 h-4 bg-gray-200 rounded-full mx-1 animate-pulse"></span>
+                    </div>
+                ) : (
+                    <button onClick={handleShare} className="bg-blue-500 text-white w-full h-full rounded-md">
+                        Share
+                    </button>
+                )}
+            </div>
+            <div className="mt-6">
+                <h2 className="text-xl font-semibold mb-4">Shared Texts</h2>
+                <div className="nm-flat-gray-200-lg rounded-lg overflow-y-auto h-80 smooth-scroll">
+                    <ul className="space-y-2 p-4">
+                        {sharedTexts.sharedTexts?.slice().reverse().map((sharedText, index) => (
+                            <li key={index} className="bg-gray-100 p-2 rounded-md">
+                                {sharedText}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-            )}
+            </div>
         </div>
-    );
-};
-
-export default TextShare;
+    )
+}

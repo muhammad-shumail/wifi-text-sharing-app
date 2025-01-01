@@ -1,20 +1,22 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
-let sharedTexts: any[] = [];
+// Initialize an empty array to store shared texts
+const sharedTexts: unknown[] = [];
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === 'POST') {
-        const { text } = req.body;
+// Define a function to handle GET requests
+export async function GET() {
+    // Return the shared texts as JSON
+    return NextResponse.json({ sharedTexts });
+}
 
-        // Here you would typically save the text to a database or in-memory store
-        // For simplicity, we'll just return the text as a response
-        res.status(200).json({ sharedText: text });
-    } else if (req.method === 'GET') {
-        // Here you would typically retrieve the shared text from a database or in-memory store
-        // For simplicity, we'll return a static response
-        res.status(200).json({ sharedText: "Sample shared text" });
-    } else {
-        res.setHeader('Allow', ['POST', 'GET']);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
-    }
+// Define a function to handle POST requests
+export async function POST(request: NextRequest) {
+    // Get the request body as JSON
+    const body = await request.json();
+
+    // Add the new text to the shared texts array
+    sharedTexts.push(body.text);
+
+    // Return the updated shared texts as JSON
+    return NextResponse.json({ sharedTexts });
 }

@@ -40,3 +40,93 @@ a {
 .container {
   @apply mx-auto px-4;
 }
+
+/* From Uiverse.io by satyamchaudharydev */
+.loading {
+ --speed-of-animation: 0.9s;
+ --gap: 6px;
+ --first-color: #4c86f9;
+ --second-color: #49a84c;
+ --third-color: #f6bb02;
+ --fourth-color: #f6bb02;
+ --fifth-color: #2196f3;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ width: 100px;
+ gap: 6px;
+ height: 100px;
+}
+
+.loading span {
+ width: 4px;
+ height: 50px;
+ background: var(--first-color);
+ animation: scale var(--speed-of-animation) ease-in-out infinite;
+}
+
+.loading span:nth-child(2) {
+ background: var(--second-color);
+ animation-delay: -0.8s;
+}
+
+.loading span:nth-child(3) {
+ background: var(--third-color);
+ animation-delay: -0.7s;
+}
+
+.loading span:nth-child(4) {
+ background: var(--fourth-color);
+ animation-delay: -0.6s;
+}
+
+.loading span:nth-child(5) {
+ background: var(--fifth-color);
+ animation-delay: -0.5s;
+}
+
+@keyframes scale {
+ 0%, 40%, 100% {
+  transform: scaleY(0.05);
+ }
+
+ 20% {
+  transform: scaleY(1);
+ }
+}
+
+.nm-inset-gray-200 {
+    background: #edf2f7;
+    box-shadow: inset .2em .2em .4em #99b5d2,inset -.2em -.2em .4em #fff
+}
+.neumorphism-card {
+  background-color: #f7f7f7;
+  border-radius: 20px;
+  box-shadow: inset 5px 5px 10px #ffffff, inset -5px -5px 10px #ffffff;
+  padding: 20px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #cacaca;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 2px 2px 2px #cacaca, inset -2px -2px 2px #ffffff;
+  background: #cacaca;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ddd;
+}
+
