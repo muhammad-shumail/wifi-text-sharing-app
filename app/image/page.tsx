@@ -1,20 +1,22 @@
-'use client'
-import Image from 'next/image';
-import { useState } from 'react';
+// app/page.js
+'use client';
 
-const ImageUploader = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [uploadedImage, setUploadedImage] = useState(null);
+import React, { useState } from 'react';
 
-  const handleImageChange = (event) => {
-    setSelectedImage(event.target.files[0]);
+const HomePage = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadedImage, setUploadedImage] = useState('');
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
   };
 
-  const handleImageUpload = async () => {
-    if (!selectedImage) return;
+  const handleUpload = async (event) => {
+    event.preventDefault();
+    if (!selectedFile) return;
 
     const formData = new FormData();
-    formData.append('image', selectedImage);
+    formData.append('file', selectedFile);
 
     try {
       const response = await fetch('/api/upload-image', {
@@ -22,26 +24,34 @@ const ImageUploader = () => {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
+      const data = await response.json();
+      if (response.ok) {
+        setUploadedImage(`/uploads/${data.filename}`); // Set the uploaded image path for display
+      } else {
+        alert(data.error);
       }
-
-      const uploadedImage = await response.json();
-      setUploadedImage(uploadedImage);
     } catch (error) {
-      console.error(error);
+      console.error('Error uploading image:', error);
     }
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleImageChange} />
-      <button onClick={handleImageUpload}>Upload Image</button>
+    <div className="max-w-md mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Image Upload Example</h1>
+      <form onSubmit={handleUpload}>
+        <input type="file" accept="image/*" onChange={handleFileChange} required />
+        <button type="submit" className="mt-2 p-2 bg-blue-500 text-white rounded">
+          Upload Image
+        </button>
+      </form>
       {uploadedImage && (
-        <Image src={`/images/${uploadedImage.name}`} width={300} height={300} alt=''/>
+        <div className="mt-4">
+          <h2 className="text-lg font-bold">Uploaded Image:</h2>
+          <img src={uploadedImage} alt="Uploaded" className="mt-2" />
+        </div>
       )}
     </div>
   );
 };
 
-export default ImageUploader;
+export default HomePage;

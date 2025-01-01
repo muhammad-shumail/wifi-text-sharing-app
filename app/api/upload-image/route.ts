@@ -1,32 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
+// app/api/upload/route.js
+import { NextResponse } from "next/server";
 import path from "path";
-import fs from "fs";
+import { writeFile } from "fs/promises";
 
-const UPLOAD_DIR = path.resolve(process.env.ROOT_PATH ?? "", "public/images");
+// Ensure the uploads directory exists
+const uploadsDir = path.join(process.cwd(), "public/uploads");
 
-export const POST = async (req: NextRequest) => {
+export const POST = async (req) => {
   const formData = await req.formData();
-  const body = Object.fromEntries(formData);
-  const file = (body.file as Blob) || null;
 
-  if (file) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    if (!fs.existsSync(UPLOAD_DIR)) {
-      fs.mkdirSync(UPLOAD_DIR);
-    }
-
-    fs.writeFileSync(
-      path.resolve(UPLOAD_DIR, (body.file as File).name),
-      buffer
-    );
-  } else {
-    return NextResponse.json({
-      success: false,
-    });
+  const file = formData.get("file");
+  if (!file) {
+    return NextResponse.json({ error: "No files received." }, { status: 400 });
   }
 
-  return NextResponse.json({
-    success: true,
-    name: (body.file as File).name,
-  });
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const filename = Date.now() + "_" + file.name.replaceAll(" ", "_");
+
+  try {
+    // Write the file to the uploads directory
+    await writeFile(path.join(uploadsDir, filename), buffer);
+    return NextResponse.json({ message: "Success", filename }, { status: 201 });
+  } catch (error) {
+    console.error("Error occurred:", error);
+    return NextResponse.json({ message: "Failed", error: error.message }, { status: 500 });
+  }
 };
