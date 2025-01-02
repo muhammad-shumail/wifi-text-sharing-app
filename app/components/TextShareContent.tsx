@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import LoadingFallback from './Loading-fallback';
 
 interface TextShareClientProps {
@@ -94,7 +94,6 @@ export default function TextShareContent({ initialSharedTexts = [] }: TextShareC
                     <ul className="space-y-2 p-4 flex flex-col">
                         {data.sharedTexts[data.sharedTexts.length - 1]?.text}
                     </ul>
-                    <ToastContainer />
                 </div>
             </div>
         </div >

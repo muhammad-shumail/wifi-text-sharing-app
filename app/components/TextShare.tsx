@@ -1,12 +1,12 @@
 'use client'
 
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import LoadingFallback from './Loading-fallback'
-import { ToastContainer, toast } from 'react-toastify';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { SharedTextItems } from '../types';
 import Loader from './Loader';
+import LoadingFallback from './Loading-fallback';
 
 interface TextShareClientProps {
     initialSharedTexts?: string[]
@@ -106,7 +106,6 @@ export default function TextShareClient({ initialSharedTexts = [] }: TextShareCl
                             </li>
                         ))}
                     </ul>
-                    <ToastContainer />
                 </div>
             </div>
         </div >
