@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
+import { networkInterfaces } from "os";
 
 const uploadsDir = path.join(process.cwd(), "public/uploads");
-const imageUrls: unknown = [];
-const shareableLink: unknown = [];
+const imageUrls: string[] = [];
+const shareableLink: string[] = [];
 
 function getLocalIp() {
-  const interfaces = require("os").networkInterfaces();
+  const interfaces = networkInterfaces();
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name] || []) {
       if (iface.family === "IPv4" && !iface.internal) {
@@ -24,7 +25,7 @@ export const GET = () => {
 };
 
 // POST endpoint to handle file uploads
-export const POST = async (req) => {
+export const POST = async (req: Request) => {
   const formData = await req.formData();
   const file = formData.get("file");
 
@@ -32,8 +33,8 @@ export const POST = async (req) => {
     return NextResponse.json({ error: "No files received." }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = Date.now() + "_" + file.name.replaceAll(" ", "_");
+  const buffer = Buffer.from(await (file as Blob).arrayBuffer());
+  const filename = Date.now() + "_" + (file as File).name.replaceAll(" ", "_");
 
   try {
     // Write the file to the uploads directory
@@ -54,6 +55,7 @@ export const POST = async (req) => {
     );
   } catch (error) {
     console.error("Error occurred:", error);
-    return NextResponse.json({ message: "Failed", error: error.message }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ message: "Failed", error: errorMessage }, { status: 500 });
   }
 };

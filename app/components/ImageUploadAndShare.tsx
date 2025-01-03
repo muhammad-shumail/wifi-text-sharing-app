@@ -14,7 +14,7 @@ const ImageUploadAndShare: React.FC = () => {
     const fetchImageUrls = async () => {
       try {
         const response = await fetch('/api/upload', { method: 'GET' });
-        const data: ImageData = await response.json();
+        const data = await response.json();
         setImageUrls(data.imageUrls);
       } catch (error) {
         console.error('Error fetching image URLs:', error);
