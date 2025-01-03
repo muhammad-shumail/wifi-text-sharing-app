@@ -92,7 +92,7 @@ const ImageUpload: React.FC = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="flex justify-between items-center mx-20 my-5">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 px-5 py-3 border-2 rounded-md shadow-md bg-white mx-10 h-[30rem] my-5 justify-center items-center">
       <section className=''>
         <h1 className="text-2xl font-bold mb-4">Image Upload Example</h1>
         <div
@@ -146,22 +146,15 @@ const ImageUpload: React.FC = () => {
       {data && (
         <div className="">
           <h2 className="text-2xl font-bold mb-4">Shareable Link:</h2>
-          <Link
-            href={data.shareableLink[0] || ''}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500"
-          >
-            {data.shareableLink[0]}
-          </Link>
-          <div className="relative mt-4 w-full max-w-[500px] h-[200px]">
+          <div className="flex items-center justify-between">
             {
               data.imageUrls[0] && <Image
                 src={data.imageUrls[0]}
                 alt="Uploaded Image"
-                layout="fill"
                 objectFit="contain"
                 className="rounded-lg"
+                width={500}
+                height={500}
               />
             }
           </div>
