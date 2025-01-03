@@ -45,10 +45,10 @@ export default function TextShareContent({ initialSharedTexts = [] }: TextShareC
         }
     }
 
-    const handleCopyUrl = (url: string) => {
-        navigator.clipboard.writeText(url);
-        toast.success('URL copied to clipboard');
-    };
+    // const handleCopyUrl = (url: string) => {
+    //     navigator.clipboard.writeText(url);
+    //     toast.success('URL copied to clipboard');
+    // };
 
 
     if (isLoadingTexts) {

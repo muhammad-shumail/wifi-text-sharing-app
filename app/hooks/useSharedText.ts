@@ -1,7 +1,7 @@
 // hooks/useSharedText.js
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-const fetchSharedText = async (id) => {
+const fetchSharedText = async (id: any) => {
   const response = await fetch(`/api/share?id=${id}`);
   if (!response.ok) {
     throw new Error('Text not found');
