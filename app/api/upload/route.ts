@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import path from "path";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import { networkInterfaces } from "os";
 
 const uploadsDir = path.join(process.cwd(), "public/uploads");
@@ -19,6 +19,17 @@ function getLocalIp() {
   return "localhost";
 }
 
+// Create the uploads directory if it doesn't exist
+async function ensureUploadsDir() {
+  try {
+    await mkdir(uploadsDir, { recursive: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
+      throw error;
+    }
+  }
+}
+
 // GET endpoint to retrieve the list of image URLs
 export const GET = () => {
   return NextResponse.json({ imageUrls, shareableLink }, { status: 200 });
@@ -26,6 +37,8 @@ export const GET = () => {
 
 // POST endpoint to handle file uploads
 export const POST = async (req: Request) => {
+  await ensureUploadsDir();
+
   const formData = await req.formData();
   const file = formData.get("file");
 
