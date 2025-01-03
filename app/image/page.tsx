@@ -1,13 +1,12 @@
 'use client';
 
-import { Query, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
-import ImageUploadAndShare from '../components/ImageUploadAndShare';
 import Loader from '../components/Loader';
-import Link from 'next/link';
 
 interface UploadResponse {
   filename: string;
@@ -17,7 +16,7 @@ const ImageUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const queryClient = useQueryClient();
-  const { isLoading, error, data, refetch } = useQuery({
+  const { isLoading, error, data } = useQuery({
     queryKey: ['imageUrls', 'shareableLink'],
     queryFn: async () => {
       const res = await fetch('/api/upload');
@@ -42,7 +41,7 @@ const ImageUpload: React.FC = () => {
 
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('Image uploaded successfully');
       queryClient.invalidateQueries({ queryKey: ['imageUrls'] });
       setSelectedFile(null);
@@ -138,9 +137,9 @@ const ImageUpload: React.FC = () => {
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
           onClick={handleUpload}
-          disabled={uploadImageMutation.isLoading}
+          disabled={uploadImageMutation.isSuccess}
         >
-          {uploadImageMutation.isLoading ? 'Uploading...' : 'Upload Image'}
+          {uploadImageMutation.isSuccess ? 'Uploading...' : 'Upload Image'}
         </button>
       </section>
 

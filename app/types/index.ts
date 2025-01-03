@@ -1,6 +1,3 @@
-import { JSXElementConstructor, ReactElement } from "react";
-import { Key } from "readline";
-
 export interface SharedText {
     id: string;
     content: string;

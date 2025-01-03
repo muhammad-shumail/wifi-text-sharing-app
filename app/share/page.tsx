@@ -1,9 +1,8 @@
 import React from 'react'
 import TextShareClient from '../components/TextShare'
 
-type Props = {}
 
-const page = (props: Props) => {
+const page = () => {
   return (
     <TextShareClient initialSharedTexts={[]} />
   )

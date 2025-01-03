@@ -1,5 +1,5 @@
 // hooks/useSharedText.js
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const fetchSharedText = async (id: any) => {
   const response = await fetch(`/api/share?id=${id}`);
@@ -9,7 +9,7 @@ const fetchSharedText = async (id: any) => {
   return response.json();
 };
 
-const shareText = async ({ text }: { text: string }) => {
+const shareText = async (text: string): Promise<{ message: string }> => {
   const response = await fetch('/api/share', {
     method: 'POST',
     headers: {
@@ -34,11 +34,11 @@ export const useSharedText = (id: any) => {
 export const useShareText = () => {
   const queryClient = useQueryClient();
 
-  return useMutation(shareText, {
+  return useMutation<{ message: string }, Error, string, unknown>({
+    mutationFn: shareText,
     onSuccess: (data) => {
-      // Optionally invalidate queries or perform other actions on success
       console.log(data.message);
-      queryClient.invalidateQueries(['sharedTexts']);
+      queryClient.invalidateQueries({ queryKey: ['sharedTexts'] });
     },
   });
 };
